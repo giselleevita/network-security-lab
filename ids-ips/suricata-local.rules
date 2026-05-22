@@ -1,0 +1,40 @@
+# suricata-local.rules
+# Suricata IDS/IPS detection rules — SME network
+# Author: Giselle Koch
+# ISO 27001 A.8.16 — Monitoring activities
+# Load via suricata.yaml: rule-files: - suricata-local.rules
+
+# ─────────────────────────────────────────────────────
+# C2 BEACONING — regular interval outbound connections
+# ─────────────────────────────────────────────────────
+alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"C2 Beaconing Regular Interval Outbound"; flow:established,to_server; threshold: type both, track by_src, count 10, seconds 60; classtype:trojan-activity; sid:2000001; rev:1;)
+
+# ─────────────────────────────────────────────────────
+# RDP BRUTE FORCE
+# ─────────────────────────────────────────────────────
+alert tcp any any -> $HOME_NET 3389 (msg:"BRUTE RDP Login Attempts"; flow:to_server,established; threshold: type both, track by_src, count 5, seconds 30; classtype:attempted-admin; sid:2000002; rev:1;)
+
+# ─────────────────────────────────────────────────────
+# HTTP BASIC AUTH BRUTE FORCE
+# ─────────────────────────────────────────────────────
+alert http any any -> $HTTP_SERVERS any (msg:"BRUTE HTTP Basic Auth Attempts"; flow:to_server,established; content:"Authorization: Basic"; http_header; threshold: type both, track by_src, count 10, seconds 60; classtype:attempted-recon; sid:2000003; rev:1;)
+
+# ─────────────────────────────────────────────────────
+# DNS OVER NON-STANDARD PORT (tunnelling evasion)
+# ─────────────────────────────────────────────────────
+alert udp $HOME_NET any -> $EXTERNAL_NET !53 (msg:"DNS Query on Non-Standard Port"; content:"|00 00 01 00 00|"; depth:5; classtype:policy-violation; sid:2000004; rev:1;)
+
+# ─────────────────────────────────────────────────────
+# DNS LARGE TXT RESPONSE — possible data exfiltration
+# ─────────────────────────────────────────────────────
+alert dns $HOME_NET any -> any 53 (msg:"DNS Large TXT Response Possible Exfiltration"; dns.query; byte_test:1,>,200,0; classtype:policy-violation; sid:2000005; rev:1;)
+
+# ─────────────────────────────────────────────────────
+# ICMP FLOOD
+# ─────────────────────────────────────────────────────
+alert icmp any any -> $HOME_NET any (msg:"ICMP Flood Detected"; itype:8; threshold: type both, track by_src, count 50, seconds 5; classtype:denial-of-service; sid:2000006; rev:1;)
+
+# ─────────────────────────────────────────────────────
+# SMB LATERAL MOVEMENT
+# ─────────────────────────────────────────────────────
+alert tcp $HOME_NET any -> $HOME_NET 445 (msg:"SMB Internal Lateral Movement Attempt"; flow:to_server,established; threshold: type both, track by_src, count 10, seconds 30; classtype:attempted-admin; sid:2000007; rev:1;)

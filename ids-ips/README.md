@@ -3,18 +3,14 @@
 This directory contains detection rules for two leading open-source IDS/IPS engines:
 
 - **Snort 3** (`snort-local.rules`) — signature-based detection
-- **Suricata** (`suricata-rules.yaml`) — multi-threaded, YAML-based
+- **Suricata** (`suricata-local.rules`) — multi-threaded, standard `.rules` format
 
 ## Covered Threat Categories
 
-| Rule Set | Detects |
+| Rule File | Detects |
 |---|---|
-| Port scan detection | Nmap SYN, FIN, NULL, XMAS scans |
-| Brute force | SSH, RDP, HTTP Basic Auth attempts |
-| Reverse shell | Common payloads (bash, python, nc) |
-| SQL injection | HTTP parameter injection probes |
-| DNS tunnelling | High-entropy TXT queries, long subdomains |
-| C2 beaconing | Regular-interval outbound connections |
+| `snort-local.rules` | SYN/FIN/NULL/XMAS scans, SSH brute force, SQLi probes, reverse shells, DNS tunnelling |
+| `suricata-local.rules` | C2 beaconing, RDP brute force, HTTP Basic Auth brute, DNS exfil, ICMP flood, SMB lateral movement |
 
 ## Deployment
 
@@ -25,8 +21,18 @@ snort -c /etc/snort/snort.lua \
       -R ids-ips/snort-local.rules \
       -i eth0 -A alert_fast
 
-# Suricata
-suricata -c /etc/suricata/suricata.yaml \
-         -S ids-ips/suricata-rules.yaml \
-         -i eth0
+# Suricata — add to suricata.yaml:
+# rule-files:
+#   - /path/to/ids-ips/suricata-local.rules
+suricata -c /etc/suricata/suricata.yaml -i eth0
+```
+
+## Testing Rules
+
+```bash
+# Validate Snort rules syntax
+snort -c /etc/snort/snort.lua -R ids-ips/snort-local.rules --test-mode
+
+# Validate Suricata rules syntax
+suricata -T -c /etc/suricata/suricata.yaml -S ids-ips/suricata-local.rules
 ```
