@@ -1,0 +1,66 @@
+# suricata-rules.yaml
+# Suricata detection rules — SME network
+# Author: Giselle Koch
+
+# Note: In production, load via suricata.yaml rule-files directive.
+# These rules supplement the ET Open ruleset.
+
+---
+rules:
+
+  # C2 beaconing — regular interval outbound connection
+  - alert tcp $HOME_NET any -> $EXTERNAL_NET any
+    msg: "C2 Beaconing — Regular Interval Outbound"
+    flow: established,to_server
+    detection:
+      condition: threshold
+      track: by_src
+      count: 10
+      seconds: 60
+    classtype: trojan-activity
+    sid: 2000001
+    rev: 1
+
+  # RDP brute force
+  - alert tcp any any -> $HOME_NET 3389
+    msg: "BRUTE RDP Login Attempts"
+    flow: to_server,established
+    threshold:
+      type: both
+      track: by_src
+      count: 5
+      seconds: 30
+    classtype: attempted-admin
+    sid: 2000002
+    rev: 1
+
+  # HTTP Basic Auth brute force
+  - alert http any any -> $HTTP_SERVERS any
+    msg: "BRUTE HTTP Basic Auth"
+    http.header
+    content: "Authorization: Basic"
+    threshold:
+      type: both
+      track: by_src
+      count: 10
+      seconds: 60
+    classtype: attempted-recon
+    sid: 2000003
+    rev: 1
+
+  # DNS over non-standard port (tunnelling evasion)
+  - alert udp $HOME_NET any -> $EXTERNAL_NET !53
+    msg: "DNS Query on Non-Standard Port"
+    dns.query
+    classtype: policy-violation
+    sid: 2000004
+    rev: 1
+
+  # Large DNS TXT response (data exfil)
+  - alert dns $HOME_NET any -> any 53
+    msg: "DNS Large TXT Response — Possible Exfiltration"
+    dns.query
+    byte_test: 4,>,200,0
+    classtype: policy-violation
+    sid: 2000005
+    rev: 1
