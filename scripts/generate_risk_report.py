@@ -50,7 +50,7 @@ def score_to_level(score: int) -> str:
 
 def generate_report(risks: list[dict]) -> str:
     lines = [
-        f"# Network Security Risk Report",
+        "# Network Security Risk Report",
         f"Generated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}\n",
         "## Executive Summary\n",
         f"Total risks identified: **{len(risks)}**",

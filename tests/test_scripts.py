@@ -1,7 +1,5 @@
 """pytest tests for network-security-lab scripts."""
 
-import pytest
-import json
 import tempfile
 from pathlib import Path
 
@@ -9,7 +7,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 from audit_open_ports import parse_port_range, scan_port
-from check_firewall_rules import check_rules, POLICY_CHECKS
+from check_firewall_rules import check_rules
 from generate_risk_report import parse_risk_register, score_to_level, generate_report
 
 

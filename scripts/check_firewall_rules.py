@@ -26,7 +26,7 @@ POLICY_CHECKS = [
     {
         "id": "FW-003",
         "name": "Drop logging enabled",
-        "pattern": r"log prefix|log flags",
+        "pattern": r"log prefix|--log-prefix|log flags",
         "required": True,
     },
     {
