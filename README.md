@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![ISO 27001](https://img.shields.io/badge/ISO%2027001-Annex%20A-blueviolet)](isms/controls.md)
 
-For the hiring-focused project narrative, see [docs/CASE_STUDY.md](docs/CASE_STUDY.md).
+For implementation tradeoffs and consulting context, see [docs/CASE_STUDY.md](docs/CASE_STUDY.md).
 
 ---
 

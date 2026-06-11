@@ -35,7 +35,7 @@ The project models a small organization network with segmented zones, hardened f
 
 ## What This Shows
 
-This repo is useful for consulting-style interviews because it bridges technical security implementation with documentation, standards mapping, and client-readable risk language.
+This repo bridges technical security implementation with documentation, standards mapping, and client-readable risk language.
 
 It also shows that the portfolio is not only AI security; it includes classic infrastructure and security fundamentals.
 
