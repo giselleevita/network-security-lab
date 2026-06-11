@@ -33,11 +33,9 @@ The project models a small organization network with segmented zones, hardened f
 - Risk register and mitigation mapping.
 - Automated validation for firewall and reporting scripts.
 
-## What This Shows
+## Operational Value
 
-This repo bridges technical security implementation with documentation, standards mapping, and client-readable risk language.
-
-It also shows that the portfolio is not only AI security; it includes classic infrastructure and security fundamentals.
+The lab connects technical controls with threat scenarios, validation scripts, and standards mappings. This makes firewall and detection changes easier to review alongside their intended risk reduction.
 
 ## Next Improvements
 
